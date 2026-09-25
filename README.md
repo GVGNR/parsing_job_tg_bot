@@ -10,8 +10,8 @@ A Telegram bot that searches for job vacancies via the RemoteOK API.
 ## How to run
 1. Install dependencies: `pip install aiogram requests`
 2. Get a token from @BotFather
-3. Insert the token into `job_bot.py`
-4. Run: `python job_bot.py`
+3. Insert the token into `pars_bot.py`
+4. Run: `python pars_bot.py`
 
 ## Example
 <img width="697" height="1008" alt="image" src="https://github.com/user-attachments/assets/17ecc118-419f-47da-9dcd-8e09a369eff9" />
