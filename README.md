@@ -14,7 +14,7 @@ A Telegram bot that searches for job vacancies via the RemoteOK API.
 4. Run: `python job_bot.py`
 
 ## Example
-<img width="714" height="1053" alt="image" src="https://github.com/user-attachments/assets/03605882-c075-41cb-9c5b-988825e6a7a6" />
+<img width="697" height="1008" alt="image" src="https://github.com/user-attachments/assets/17ecc118-419f-47da-9dcd-8e09a369eff9" />
 
 
 ## Tech stack
