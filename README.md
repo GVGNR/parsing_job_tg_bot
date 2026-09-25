@@ -8,9 +8,9 @@ A Telegram bot that searches for job vacancies via the RemoteOK API.
 - Returns 5 results: title, company, location, salary, link
 
 ## How to run
-1. Install dependencies: `pip install aiogram requests`
-2. Get a token from @BotFather
-3. Insert the token into `pars_bot.py`
+1. Install dependencies: `pip install aiogram requests python-dotenv`
+2. Get a token from [@BotFather](https://t.me/BotFather)
+3. Create a `.env` file in the project root: `BOT_TOKEN=your_token_here`
 4. Run: `python pars_bot.py`
 
 ## Example
