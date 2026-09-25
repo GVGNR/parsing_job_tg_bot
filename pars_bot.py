@@ -1,22 +1,33 @@
 import asyncio
+import os
+
 import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from dotenv import load_dotenv
 
-# Insert your BotFather token here
-BOT_TOKEN = ""
+# Load token from .env file
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# API hh.ru
-HH_URL = "https://remoteok.com/api"
-HEADERS = {"User-Agent": "MyJobBot/1.0 (test@example.com)"}
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN is not set. Create a .env file with BOT_TOKEN=your_token")
+
+# RemoteOK API
+REMOTEOK_URL = "https://remoteok.com/api"
+HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
 def search_vacancies(query, count=5):
-    url = "https://remoteok.com/api"
-    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-    if response.status_code != 200:
+    """Search vacancies on RemoteOK by keyword."""
+    try:
+        response = requests.get(REMOTEOK_URL, headers=HEADERS, timeout=15)
+        if response.status_code != 200:
+            return []
+        data = response.json()
+    except requests.RequestException:
         return []
-    data = response.json()
+
     jobs = [j for j in data if isinstance(j, dict) and j.get("position")]
     query_lower = query.lower()
     filtered = [
@@ -28,6 +39,7 @@ def search_vacancies(query, count=5):
 
 
 def format_vacancy(v):
+    """Format a single vacancy as an HTML message."""
     name = v.get("position") or "untitled"
     company = v.get("company") or "is not specified"
     location = v.get("location") or "Remote"
@@ -38,9 +50,9 @@ def format_vacancy(v):
     if salary_min and salary_max:
         salary = f"${salary_min}–${salary_max}"
     elif salary_min:
-        salary = f"от ${salary_min}"
+        salary = f"from ${salary_min}"
     elif salary_max:
-        salary = f"до ${salary_max}"
+        salary = f"to ${salary_max}"
     else:
         salary = "is not specified"
 
@@ -49,7 +61,7 @@ def format_vacancy(v):
         f"🏢 {company}\n"
         f"📍 {location}\n"
         f"💰 {salary}\n"
-        f"🔗 <a href='{url}'>Открыть</a>"
+        f"🔗 <a href='{url}'>Open</a>"
     )
 
 
@@ -82,21 +94,21 @@ async def cmd_help(message: types.Message):
 @dp.message()
 async def handle_query(message: types.Message):
     query = message.text.strip()
-    
+
     if not query:
         await message.answer("Please send a keyword to search.")
         return
-    
+
     await message.answer(f"🔍 Searching for vacancies: «{query}»...")
-    
+
     # Run sync requests in a separate thread to avoid blocking the bot
     loop = asyncio.get_event_loop()
     vacancies = await loop.run_in_executor(None, search_vacancies, query, 5)
-    
+
     if not vacancies:
         await message.answer("Nothing found. Try another keyword.")
         return
-    
+
     for v in vacancies:
         await message.answer(
             format_vacancy(v),
@@ -108,6 +120,10 @@ async def handle_query(message: types.Message):
 async def main():
     print("Bot is running. Press Ctrl+C to stop.")
     await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 
 if __name__ == "__main__":
     asyncio.run(main())
