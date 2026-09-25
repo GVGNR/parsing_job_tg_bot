@@ -1,4 +1,3 @@
-# parsing_job_tg_bot
 # Telegram Job Bot
 
 A Telegram bot that searches for job vacancies via the RemoteOK API.
